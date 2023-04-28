@@ -1,8 +1,14 @@
 import React from "react";
 import {Box, Text, Divider, HStack, Button} from 'native-base';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Resultado()
 {
+    async function recuperarDados()
+    {
+        const response =JSON.parse(await AsyncStorage.getItem("@catalagoDeTablets:tablets"));
+        console.log(response);
+    }
     return(
         <Box flex={1} backgroundColor="FAFAFA" flexDir="column">
             <HStack padding={4} w="100%" alignContent="center" justifyContent="center" flexDir="row" safeArea >
@@ -37,7 +43,7 @@ export default function Resultado()
             </Box>
             <Box alignItems="center" justifyContent="center" height="100%" padding={1}>
                 <Box flexDir="row">
-                    <Button marginX={1} colorScheme="muted" disabled={true}>Editar</Button>
+                    <Button marginX={1} colorScheme="muted" onPress={recuperarDados}>Editar</Button>
                     <Button marginX={1} colorScheme="muted" disabled={true}>Excluir</Button>
                 </Box>
                 

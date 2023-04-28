@@ -1,4 +1,5 @@
-import React from 'react'
+import React, {useState} from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { Box,
     HStack, 
@@ -11,7 +12,24 @@ import { Box,
     Checkbox,
     TextArea} from 'native-base'
 
+  
+
 export default function Catalogar(){
+
+    const [patrimonio, setPatrimonio] = useState("");
+    const [IMEI, setImei] = useState("");
+    const [Responsavel, setResponsavel] = useState("");
+
+    async function encapsularDados()
+    {
+        const newData={
+            patrimonio,
+            IMEI,
+            Responsavel
+        }
+        await AsyncStorage.setItem("@catalagoDeTablets:tablets", JSON.stringify(newData));
+        console.log(await AsyncStorage.getItem("@catalagoDeTablets:tablets"));
+    }
     return(
         <Box flex={1} backgroundColor="FAFAFA" flexDir="column">
             <HStack padding={4} w="100%" alignContent="center" justifyContent="center" flexDir="row" safeArea >
@@ -27,11 +45,15 @@ export default function Catalogar(){
             </Box>
             <Box flexDir="row" padding={2} marginTop="1%" >
                 <Text marginX={3} >Patrimônio :</Text>
-                <Input placeholder=""  width="50%"/>
+                <Input placeholder=""  width="50%"
+                onChangeText={setPatrimonio}
+                />
             </Box>
             <Box flexDir="row" padding={4} >
                 <Text marginX={3} >IMEI :</Text>
-                <Input placeholder="" width="70%"/>
+                <Input placeholder="" width="70%"
+                onChangeText={setImei}
+                />
             </Box>
             <Box flexDir="row" padding={4} >
                 <Text marginX={3} >Responsável pelo Tablet:</Text>
@@ -43,7 +65,9 @@ export default function Catalogar(){
             </Box>
             <Box padding={4} >
                 <Text>Nome do Responsável :</Text>
-                <Input placeholder="" width="90%" />
+                <Input placeholder="" width="90%"
+                onChangeText={setResponsavel} 
+                />
             </Box>
             <Box>
                 <Center>
@@ -70,7 +94,9 @@ export default function Catalogar(){
                 <TextArea h={20} width="90%"></TextArea>
             </Box>
             <Box alignItems="center" justifyContent="flex-end">
-                <Button width="80%" colorScheme="emerald" size="lg">Catalogar</Button>
+                <Button width="80%" colorScheme="emerald" size="lg"
+                onPress={encapsularDados}>
+                    Catalogar</Button>
             </Box>
         </Box>
     );
