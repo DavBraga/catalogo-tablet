@@ -70,7 +70,7 @@ export default function Catalogar(){
                 <TextArea h={20} width="90%"></TextArea>
             </Box>
             <Box alignItems="center" justifyContent="flex-end">
-                <Button width="80%" colorScheme="emerald">Catalogar</Button>
+                <Button width="80%" colorScheme="emerald" size="lg">Catalogar</Button>
             </Box>
         </Box>
     );

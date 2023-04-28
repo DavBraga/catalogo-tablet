@@ -6,7 +6,7 @@ import {Box,
     Input,
     Button,
 } from 'native-base';
-export default function Consultar()
+export default function Consultar(props)
 {
     return(
         <Box flex={1} backgroundColor="FAFAFA" flexDir="column">
@@ -33,8 +33,11 @@ export default function Consultar()
                     <Input placeholder="" width="90%" />
                 </Box>      
             </Box>
-            <Box alignItems="center" justifyContent="center" height="100%">
-                <Button colorScheme="emerald">Consultar</Button>
+            <Box alignItems="center" justifyContent="center" height="80%">
+                <Button colorScheme="emerald" size="lg"
+                onPress={()=>{props.navigation.navigate("Resultado")}}
+                
+                >Consultar</Button >
             </Box>
                 
         </Box>     

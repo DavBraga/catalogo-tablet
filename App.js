@@ -1,16 +1,17 @@
 import React from "react";
+import { SafeAreaView } from "react-native";
 import {NativeBaseProvider, Box, Center} from "native-base";
-import Home from "./src/pages/home";
-import Consultar from "./src/pages/consultar";
-import Catalogar from "./src/pages/catalogar";
-import Resultado from "./src/pages/resultado";
+import { NavigationContainer } from "@react-navigation/native";
+import Navigation from "./src/components/Navigation";
 
 
 
 export default function App(){
   return(
-    <NativeBaseProvider>
-      <Resultado/>
-    </NativeBaseProvider>
+      <NavigationContainer>
+        <NativeBaseProvider>
+          <Navigation/>
+        </NativeBaseProvider>
+      </NavigationContainer>
   );
 }
