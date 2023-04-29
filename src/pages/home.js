@@ -1,9 +1,14 @@
 import React from 'react'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { Box,HStack, Center, Button, Divider, Text,} from 'native-base'
 
 
 export default function Home(props){
+
+    async function cleanUp(){
+        await AsyncStorage.removeItem("@catalagoDeTablets:tablets");
+    }
     
     return(
         <Box flex={1} backgroundColor="FAFAFA" flexDir="column">
@@ -22,6 +27,10 @@ export default function Home(props){
                     <Button colorScheme="emerald" marginTop ="3%" size="lg"
                     onPress={()=> {props.navigation.navigate("Consultar")}}>
                         Consultar Tablet
+                    </Button>
+                    <Button colorScheme="emerald" marginTop ="3%" size="lg"
+                    onPress={cleanUp}>
+                        Limpar Dados Locais
                     </Button>
                     <Button colorScheme="muted" disabled={true} marginTop ="3%" size="lg">
                         Carregar/Exportar .CSV

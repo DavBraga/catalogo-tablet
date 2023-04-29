@@ -27,9 +27,14 @@ export default function Catalogar(){
             IMEI,
             Responsavel
         }
-        await AsyncStorage.setItem("@catalagoDeTablets:tablets", JSON.stringify(newData));
+        const response = await AsyncStorage.getItem("@catalagoDeTablets:tablets");
+        const previousData = response ? JSON.parse(response): [];
+        const data = [...previousData, newData];
+
+        await AsyncStorage.setItem("@catalagoDeTablets:tablets", JSON.stringify(data));
         console.log(await AsyncStorage.getItem("@catalagoDeTablets:tablets"));
     }
+    
     return(
         <Box flex={1} backgroundColor="FAFAFA" flexDir="column">
             <HStack padding={4} w="100%" alignContent="center" justifyContent="center" flexDir="row" safeArea >
