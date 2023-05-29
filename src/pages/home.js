@@ -21,7 +21,7 @@ export default function Home(props){
             <Center height="80%"  alignItems="center" justifyContent="center">
                 <Box justifyItems="center" >
                     <Button colorScheme="emerald" size="lg" onPress={
-                        ()=> {props.navigation.navigate("Catalogar")}} >
+                        ()=> {props.navigation.navigate("Catalogar",{ data: '0'})}} >
                         Catalogar Tablet
                     </Button>
                     <Button colorScheme="emerald" marginTop ="3%" size="lg"

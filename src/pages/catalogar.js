@@ -1,8 +1,9 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import { useRoute } from '@react-navigation/native';
 
 import { Box,
-    HStack, 
     Center, 
     Button, 
     Divider, 
@@ -10,16 +11,31 @@ import { Box,
     Input , 
     Select, 
     Checkbox,
-    TextArea} from 'native-base'
+    FormControl,
+    TextArea,
+    IconButton,
+} from 'native-base'
 
-  
 
-export default function Catalogar(){
+export default function Catalogar(props){
 
     const [patrimonio, setPatrimonio] = useState("");
     const [IMEI, setImei] = useState("");
     const [Responsavel, setResponsavel] = useState("");
+    const [lendoPatrimonio, setRead]  = useState(true);
 
+    const route = useRoute();
+
+    const { data } = route.params;
+    useEffect(()=>{
+        if(lendoPatrimonio===false)
+            setImei(data);
+        else
+            setPatrimonio(data);
+        
+       // currentRoute = props.navigation.getCurrentRoute();
+    })
+    
     async function encapsularDados()
     {
         const newData={
@@ -34,31 +50,35 @@ export default function Catalogar(){
         await AsyncStorage.setItem("@catalagoDeTablets:tablets", JSON.stringify(data));
         console.log(await AsyncStorage.getItem("@catalagoDeTablets:tablets"));
     }
-    
+     
     return(
-        <Box flex={1} backgroundColor="FAFAFA" flexDir="column">
-            <HStack padding={4} w="100%" alignContent="center" justifyContent="center" flexDir="row" safeArea >
-                <Box >
-                    <Text fontSize="3xl" fontWeight={"bold"}> Catalogar Tablet</Text>
-                    <Divider bg="emerald.600"/>
-                </Box>
-            </HStack>
-            <Box>
-                <Text padding={2} marginTop="1%" fontWeight="bold">
-                    Novo Catalogado
-                </Text>
+        <Box flex={1} backgroundColor="FAFAFA" flexDir="column" alignContent="center" margin="5%">    
+            <Box margin={4}>
+                <Text fontSize="3xl" fontWeight={"bold"} textAlign="center"> Catalogar Tablet</Text>
+                <Divider bg="emerald.600"/>
+            </Box>   
+
+            <Box flexDir="row" margin={1}>
+            <FormControl.Label marginRight="1">Patrimônio:</FormControl.Label>
+                <Input placeholder="" flex={1}
+                onChangeText={setPatrimonio}  
+                alignContent="center" 
+                justifyContent="center"
+                marginX="1"
+                >{patrimonio}</Input> 
+                <IconButton size="md" icon={<Icon name="qr-code" color="black" />} colorScheme="emerald" 
+                onPress={()=> {setRead(true); props.navigation.navigate("Scan", route.name)}} ></IconButton>
             </Box>
-            <Box flexDir="row" padding={2} marginTop="1%" >
-                <Text marginX={3} >Patrimônio :</Text>
-                <Input placeholder=""  width="50%"
-                onChangeText={setPatrimonio}
-                />
-            </Box>
-            <Box flexDir="row" padding={4} >
-                <Text marginX={3} >IMEI :</Text>
-                <Input placeholder="" width="70%"
-                onChangeText={setImei}
-                />
+            <Box flexDir="row" margin={1} >
+                <FormControl.Label marginRight="1">IMEI:</FormControl.Label>
+                <Input placeholder="" flex={1}
+                onChangeText={setImei}  
+                alignContent="center" 
+                justifyContent="center"
+                marginX="1"
+                >{IMEI}</Input>
+                <IconButton size="md" icon={<Icon name="qr-code" color="black" />} colorScheme="emerald" 
+                onPress={()=> {setRead(false); props.navigation.navigate("Scan", route.name); }} ></IconButton>
             </Box>
             <Box flexDir="row" padding={4} >
                 <Text marginX={3} >Responsável pelo Tablet:</Text>
@@ -94,9 +114,9 @@ export default function Catalogar(){
                     <Checkbox value="maintaince" accessibilityLabel="maintaince"> Manutenção </Checkbox>
                 </Box>   
             </Box>
-            <Box alignItems="center" padding={1} marginTop={2}>
+            <Box alignItems="center" padding={1} marginTop={2} safeArea>
                 <Text>Observações/Ocorrências</Text>
-                <TextArea h={20} width="90%"></TextArea>
+                <TextArea h={20} width="90%" ></TextArea>
             </Box>
             <Box alignItems="center" justifyContent="flex-end">
                 <Button width="80%" colorScheme="emerald" size="lg"
