@@ -15,14 +15,6 @@ export default function Resultado()
         
         if(queryKey == null) return;
 
-        if(queryKey.patrimonio != "")
-        {
-            const previousData = response ? JSON.parse(response) : [];
-                previousData.forEach(element => {
-                if(element.patrimonio == queryKey.patrimonio) AtualizarDadosExibidos(element);
-            });
-
-        }
         else if(queryKey.IMEI != "")
         {
             const previousData = response ? JSON.parse(response) : [];
@@ -31,6 +23,14 @@ export default function Resultado()
             });
         }
 
+        if(queryKey.patrimonio != "")
+        {
+            const previousData = response ? JSON.parse(response) : [];
+                previousData.forEach(element => {
+                if(element.patrimonio == queryKey.patrimonio) AtualizarDadosExibidos(element);
+            });
+
+        }
         else if(queryKey.Responsavel != "")
         {
             const previousData = response ? JSON.parse(response) : [];

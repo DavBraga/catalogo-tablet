@@ -15,6 +15,7 @@ export default function BarCodePage(props) {
   const [scanning, setScanning] = useState(true);
   const [sound, setSound] = useState();
   const route = useRoute();
+  let routename = route.params;
 
   
   async function playSound() {
@@ -36,7 +37,6 @@ export default function BarCodePage(props) {
     };
 
     getBarCodeScannerPermissions();
-    const { routename } = route.params;
   }, []);
 
 
@@ -45,7 +45,7 @@ export default function BarCodePage(props) {
     playSound();
     setScanning(false);
     console.log("content "+data);
-    props.navigation.navigate("Catalogar", { data});
+    props.navigation.navigate(routename, { data});
   };
 
   if (hasPermission === null) {
@@ -59,7 +59,7 @@ export default function BarCodePage(props) {
     return (
       <SafeAreaView style={styles.container}>
         <Text style={styles.text}>Sem acesso a camera.</Text>
-        <Button title='Retornar' onPress={()=>{props.navigation.navigate({routename}, { data})}}></Button>
+        <Button title='Retornar' onPress={()=>{props.navigation.navigate({routename}, { data: '0'})}}></Button>
       </SafeAreaView>
     );
   }
@@ -82,7 +82,7 @@ export default function BarCodePage(props) {
          {/* {scanning && <Button title={'Toque para escanear novamente.'} onPress={() => setScanned(false)} color='#379263' />} */}
       </View> 
       }
-      <Button  title='Retornar' color='#379263' onPress={()=>{props.navigation.navigate("Catalogar", { data: '0'})}}></Button>
+      <Button  title='Retornar' color='#379263' onPress={()=>{props.navigation.navigate(routename, { data: '0'})}}></Button>
     
       <View style={styles.buttonContainer}>
        

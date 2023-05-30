@@ -25,7 +25,7 @@ export default function Home(props){
                         Catalogar Tablet
                     </Button>
                     <Button colorScheme="emerald" marginTop ="3%" size="lg"
-                    onPress={()=> {props.navigation.navigate("Consultar")}}>
+                    onPress={()=> {props.navigation.navigate("Consultar", { data: '0'})}}>
                         Consultar Tablet
                     </Button>
                     <Button colorScheme="emerald" marginTop ="3%" size="lg"
