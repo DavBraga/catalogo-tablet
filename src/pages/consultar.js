@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRoute } from '@react-navigation/native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import {Box,
     Text, 
     Divider, 
@@ -14,9 +14,9 @@ export default function Consultar(props)
     const [patrimonio, setPatrimonio] = useState("");
     const [IMEI, setImei] = useState("");
     const [Responsavel, setResponsavel] = useState("");
-    const [lerCodigo, setLerCodigo] = useState(false);
 
     const route = useRoute();
+    const {data} = route.params;
 
     async function saveQueryParam()
     {
@@ -29,9 +29,6 @@ export default function Consultar(props)
     }
 
     useEffect(()=>{
-        const {data} = route.params;
-       if(lerCodigo=== false) return;
-       setLerCodigo(false);
         if(data == '0')
         {
             return;
@@ -50,7 +47,7 @@ export default function Consultar(props)
         setResponsavel("");
         setPatrimonio("");
 
-    })
+    },[data])
 
     return(
         <Box flex={1} backgroundColor="FAFAFA" flexDir="column" margin='5%'>
@@ -82,9 +79,11 @@ export default function Consultar(props)
                 </Box>      
             </Box>
 
-            <Box flex={1} alignItems='center' justifyContent="flex-end" alignContent='flex-end'>
-            <IconButton size="md" icon={<Icon name="qr-code" color="black" />} colorScheme="emerald" 
-                onPress={()=> {setLerCodigo(true); props.navigation.navigate("Scan", route.name); }} ></IconButton>
+            <Box flex={1} alignItems='center' justifyContent="flex-end" alignContent='flex-end'  >
+            <IconButton icon={<Ionicons name="barcode"/>} 
+                _icon={{size:"2xl", color: 'black'}}
+               // colorScheme="emerald" 
+                onPress={()=> {props.navigation.navigate("Scan", route.name); }} ></IconButton>
             </Box>
 
             <Box flex={1} alignItems='center' justifyContent="flex-end" alignContent='flex-end'>

@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRoute } from '@react-navigation/native';
 
 import { Box,
@@ -23,24 +23,16 @@ export default function Catalogar(props){
     const [IMEI, setImei] = useState("");
     const [Responsavel, setResponsavel] = useState("");
     const [lendoPatrimonio, setRead]  = useState(true);
-    const [lerCodigo, setLerCodigo] = useState(false);
 
     const route = useRoute();
     const { data } = route.params;
     
     useEffect(()=>{
-        if(lerCodigo===false) return;
-
-       
             if(lendoPatrimonio===false)
-            
                 setImei(data);
             else
                 setPatrimonio(data);
-                
-            setLerCodigo(false);
-
-    })
+    },[data])
     
     async function encapsularDados()
     {
@@ -72,7 +64,7 @@ export default function Catalogar(props){
                 justifyContent="center"
                 
                 >{patrimonio}</Input> 
-                <IconButton size="md" icon={<Icon name="qr-code" color="black" />} colorScheme="emerald" 
+                <IconButton size="md" icon={<Ionicons name="barcode" color="black" />} colorScheme="emerald" 
                 onPress={()=> {setLerCodigo(true);setRead(true); props.navigation.navigate("Scan", route.name)}} ></IconButton>
             </Box>
 
@@ -85,7 +77,7 @@ export default function Catalogar(props){
                 alignContent="center" 
                 justifyContent="center"
                 >{IMEI}</Input>
-                <IconButton size="md" icon={<Icon name="qr-code" color="black" />} colorScheme="emerald" 
+                <IconButton size="md" icon={<Ionicons name="barcode" color="black" />} colorScheme="emerald" 
                 onPress={()=> {setLerCodigo(true); setRead(false); props.navigation.navigate("Scan", route.name); }} ></IconButton>
             </Box>
             <Box flexDir="row"marginTop='3%' justifyContent='space-between'>
@@ -114,7 +106,7 @@ export default function Catalogar(props){
                 
                     <Text>Paradeiro :</Text>
                     <Select minWidth="100" >
-                    <Select.Item label="Aluno" value="student" />
+                    <Select.Item label="Usuário" value="user" />
                     <Select.Item label="Escola" value="school" />
                     <Select.Item label="SME" value="SME" />
                     <Select.Item label="Sem Informação" value="noinfo" />
