@@ -65,7 +65,7 @@ export default function Catalogar(props){
                 
                 >{patrimonio}</Input> 
                 <IconButton size="md" icon={<Ionicons name="barcode" color="black" />} colorScheme="emerald" 
-                onPress={()=> {setLerCodigo(true);setRead(true); props.navigation.navigate("Scan", route.name)}} ></IconButton>
+                onPress={()=> {setRead(true); props.navigation.navigate("Scan", route.name)}} ></IconButton>
             </Box>
 
             
@@ -78,7 +78,7 @@ export default function Catalogar(props){
                 justifyContent="center"
                 >{IMEI}</Input>
                 <IconButton size="md" icon={<Ionicons name="barcode" color="black" />} colorScheme="emerald" 
-                onPress={()=> {setLerCodigo(true); setRead(false); props.navigation.navigate("Scan", route.name); }} ></IconButton>
+                onPress={()=> { setRead(false); props.navigation.navigate("Scan", route.name); }} ></IconButton>
             </Box>
             <Box flexDir="row"marginTop='3%' justifyContent='space-between'>
                 <Text marginX={3} >Responsável pelo Tablet:</Text>
