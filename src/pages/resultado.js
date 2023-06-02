@@ -1,54 +1,75 @@
 import React, {useEffect, useState} from "react";
 import {Box, Text, Divider, HStack, Button} from 'native-base';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { RecuperarDados,testFunction } from "../components/AsyncStorageHandler";
 
 export default function Resultado()
 {
     const [patrimonio, setPatrimonio] = useState("");
     const [IMEI, setImei] = useState("");
     const [Responsavel, setResponsavel] = useState("");
+    let  dados;
 
-    async function recuperarDados()
+    const retriveData = async()=>
     {
-        const response =(await AsyncStorage.getItem("@catalagoDeTablets:tablets"));
-        const queryKey =  JSON.parse(await AsyncStorage.getItem("@catalagoDeTablets:queryKey"));
-        
-        if(queryKey == null) return;
-
-        else if(queryKey.IMEI != "")
-        {
-            const previousData = response ? JSON.parse(response) : [];
-            previousData.forEach(element => {
-                if(element.IMEI == queryKey.IMEI) AtualizarDadosExibidos(element);
-            });
-        }
-
-        if(queryKey.patrimonio != "")
-        {
-            const previousData = response ? JSON.parse(response) : [];
-                previousData.forEach(element => {
-                if(element.patrimonio == queryKey.patrimonio) AtualizarDadosExibidos(element);
-            });
-
-        }
-        else if(queryKey.Responsavel != "")
-        {
-            const previousData = response ? JSON.parse(response) : [];
-            previousData.forEach(element => {
-                if(element.Responsavel == queryKey.Responsavel) AtualizarDadosExibidos(element);
-            });
-        }
-        AsyncStorage.removeItem("@catalagoDeTablets:queryKey");
+        const retriveData = await RecuperarDados();
+        AtualizarDadosExibidos(retriveData);
+        console.log(retriveData);
     }
+
+    // RecuperarDados().then(element=>{
+    //     console.log(element);
+    //  })
+    //  .catch(error=>{
+    //     console.log('error: '+error);
+    //  })
+    
+    // async function recuperarDados()
+    // {
+    //     const response =(await AsyncStorage.getItem("@catalagoDeTablets:tablets"));
+    //     const queryKey =  JSON.parse(await AsyncStorage.getItem("@catalagoDeTablets:queryKey"));
+    //     console.log(queryKey);
+    //     if(queryKey == null) return;
+
+    //     else if(queryKey.IMEI != "")
+    //     {
+    //         const previousData = response ? JSON.parse(response) : [];
+    //         previousData.forEach(element => {
+    //             if(element.IMEI == queryKey.IMEI) AtualizarDadosExibidos(element);
+    //         });
+    //     }
+
+    //     if(queryKey.patrimonio != "")
+    //     {
+    //         const previousData = response ? JSON.parse(response) : [];
+    //             previousData.forEach(element => {
+    //             if(element.patrimonio == queryKey.patrimonio) AtualizarDadosExibidos(element);
+    //         });
+
+    //     }
+    //     else if(queryKey.Responsavel != "")
+    //     {
+    //         const previousData = response ? JSON.parse(response) : [];
+    //         previousData.forEach(element => {
+    //             if(element.Responsavel == queryKey.Responsavel) AtualizarDadosExibidos(element);
+    //         });
+    //     }
+    //     AsyncStorage.removeItem("@catalagoDeTablets:queryKey");
+    // }
 
     function AtualizarDadosExibidos(resultado)
     {
+       
         setPatrimonio(resultado.patrimonio);
         setImei(resultado.IMEI);
         setResponsavel(resultado.Responsavel);
     }
     useEffect(()=>{
-        recuperarDados();
+        retriveData();
+       
+    //console.log(testFunction());
+
+
     })
 
 

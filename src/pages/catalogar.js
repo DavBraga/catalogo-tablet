@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRoute } from '@react-navigation/native';
+import { SalvarDados } from '../components/AsyncStorageHandler';
 
 import { Box,
     Center, 
@@ -12,7 +12,6 @@ import { Box,
     Select, 
     Checkbox,
     FormControl,
-    TextArea,
     IconButton,
 } from 'native-base'
 
@@ -32,29 +31,20 @@ export default function Catalogar(props){
                 setImei(data);
             else
                 setPatrimonio(data);
-    },[data])
-    
-    async function encapsularDados()
-    {
-        const newData={
-            patrimonio,
-            IMEI,
-            Responsavel
-        }
-        const response = await AsyncStorage.getItem("@catalagoDeTablets:tablets");
-        const previousData = response ? JSON.parse(response): [];
-        const data = [...previousData, newData];
-
-        await AsyncStorage.setItem("@catalagoDeTablets:tablets", JSON.stringify(data));
-        console.log(await AsyncStorage.getItem("@catalagoDeTablets:tablets"));
-    }
-     
+    },[data])  
     return(
-        <Box flex={1} backgroundColor="FAFAFA" flexDir="column" alignContent="center" margin='5%'>    
+
+
+        <Box flex={1} backgroundColor="FAFAFA" flexDir="column" alignContent="center" margin='5%'>  
+
+            {/* TITULO   */}
+
             <Box >
                 <Text fontSize="3xl" fontWeight={"bold"} textAlign="center"> Catalogar Tablet</Text>
                 <Divider bg="emerald.600"/>
             </Box>   
+
+            {/* INPUT DE PATRIMONIO */}
 
             <Box flexDir="row" marginTop='3%'>
             <FormControl.Label marginRight="1">Patrimônio:</FormControl.Label>
@@ -68,7 +58,7 @@ export default function Catalogar(props){
                 onPress={()=> {setRead(true); props.navigation.navigate("Scan", route.name)}} ></IconButton>
             </Box>
 
-            
+            {/* iNPUT DE IMEI */}
 
             <Box flexDir="row" marginTop='3%'>
                 <FormControl.Label marginRight="1">IMEI:</FormControl.Label>
@@ -78,8 +68,11 @@ export default function Catalogar(props){
                 justifyContent="center"
                 >{IMEI}</Input>
                 <IconButton size="md" icon={<Ionicons name="barcode" color="black" />} colorScheme="emerald" 
-                onPress={()=> { setRead(false); props.navigation.navigate("Scan", route.name); }} ></IconButton>
+                onPress={()=> {setRead(false); props.navigation.navigate("Scan", route.name); }} ></IconButton>
             </Box>
+
+            {/* INPUT DE RESPONSÁVEL */}
+
             <Box flexDir="row"marginTop='3%' justifyContent='space-between'>
                 <Text marginX={3} >Responsável pelo Tablet:</Text>
                 <Select accessibilityLabel="Responsável" placeholder="Responsável" minWidth="150">
@@ -102,6 +95,7 @@ export default function Catalogar(props){
             </Box>
 
             {/* Status */}
+
             <Box flexDir="row" marginTop={2} justifyContent='space-between'>
                 
                     <Text>Paradeiro :</Text>
@@ -122,7 +116,7 @@ export default function Catalogar(props){
 
             <Box  flex={1} alignItems='center' justifyContent="flex-end" alignContent='flex-end'>
                 <Button width="80%" colorScheme="emerald" size="lg"
-                onPress={encapsularDados}>
+                onPress={()=>{SalvarDados({patrimonio,IMEI,Responsavel})}}>
                     Catalogar</Button>
             </Box>
         </Box>
