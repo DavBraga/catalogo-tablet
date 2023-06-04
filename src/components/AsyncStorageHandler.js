@@ -6,97 +6,68 @@ export async function RecuperarDados()
 {   
     const queryKey =  JSON.parse(await AsyncStorage.getItem("@catalagoDeTablets:queryKey"));
     const response =JSON.parse(await asyncRecuperarDados());
+    if(!response) return null;
     return Compare(response, queryKey);
+}
 
-    // try
-    // {
-    //     if(queryKey.IMEI != "")
-    //     {
-    //         const previousData = response ? JSON.parse(response) : [];
-    //         previousData.forEach(element => {
-    //             if(element.IMEI == queryKey.IMEI) 
-    //             {
-    //                 console.log('found');
-    //                 return "element";
-    //         }
-    //         });
-    //     }
-    //     if(queryKey.patrimonio != "")
-    //     {
-    //         const previousData = response ? JSON.parse(response) : [];
-    //         previousData.forEach(element => {
-    //         if(element.patrimonio == queryKey.patrimonio)
-    //         {
-    //             console.log('found');
-    //             return "element";
-                
-    //         }
-    //         });
-    //     }
-    //     else if(queryKey.Responsavel != "")
-    //     {
-    //         const previousData = response ? JSON.parse(response) : [];
-    //         previousData.forEach(element => {
-    //             if(element.Responsavel == queryKey.Responsavel) 
-    //             {
-    //                 console.log('found');
-    //                 return "element";
-    //         }
-    //         });
-    //     }
-    // }catch(error)
-    // {
-    //     console.log("falha ao recuperar dados:"+ error);
-    //     throw error;
-    // }
-            // if(queryKey == null) return ;
+async function ChecarSeJaCadastrado(dadosASeremBuscados)
+{
+    // TODO: Ainda não funciona.
+    console.log("Dados a serem checados:"+ dadosASeremBuscados.patrimonio);
+    const response =JSON.parse(await asyncRecuperarDados());
+    if(!response) return false;
+    console.log("Resultado do compare: " +Compare(response, dadosASeremBuscados));
+     if(Compare(response, dadosASeremBuscados)!=null)
+     {
+        console.log("not null so true");
+        return true;
+     }
         
-            // else if(queryKey.IMEI != "")
-            // {
-            //     const previousData = response ? JSON.parse(response) : [];
-            //     previousData.forEach(element => {
-            //         if(element.IMEI == queryKey.IMEI) 
-            //         {
-            //             console.log(element);
-            //     }
-            //     });
-            // }
-        
-            // if(queryKey.patrimonio != "")
-            // {
-            //     const previousData = response ? JSON.parse(response) : [];
-            //         previousData.forEach(element => {
-            //         if(element.patrimonio == queryKey.patrimonio)
-            //         {
-            //             console.log(element);
-                        
-            //         }
-            //     });
-        
-            // }
-            // else if(queryKey.Responsavel != "")
-            // {
-            //     const previousData = response ? JSON.parse(response) : [];
-            //     previousData.forEach(element => {
-            //         if(element.Responsavel == queryKey.Responsavel) 
-            //         {
-            //             console.log(element);
-            //     }
-            //     });
-            // }
-
+     console.log("do i arrive here?");
+     return false;
 }
 
 function Compare(response ,queryKey)
 {
     let av;
-    response.forEach(element => {
-        if(element.patrimonio== queryKey.patrimonio)
+
+    for(element of response)
+    {
+        // SE A CHAVE DE BUSCA NULA, DESISTIR
+        if(queryKey==null||queryKey== undefined) return null;
+
+        // CHECK IMEI
+        if(queryKey.IMEI != "")
         {
-            av = element;   
+            if(element.IMEI== queryKey.IMEI)
+            {
+                av = element;
+                return av;   
+            }
         }
-    });
-    return av;
+
+        // CHECK PATRIMONIO
+        if(queryKey.patrimonio != "")
+        {
+            if(element.patrimonio== queryKey.patrimonio)
+            {
+                av = element;
+                return av;   
+            }
+        }
+
+        // CHECK RESPONSAVEL
+        if(queryKey.Responsavel != "")
+        {
+            console.log(queryKey.Responsavel);
+            if(element.Responsavel == queryKey.Responsavel)
+            {
+                av = element;
+                return av;   
+            }
+        }
+    }
+    return null;
 }
 
 export function testFunction()
@@ -104,19 +75,48 @@ export function testFunction()
     return 500;
 }
 
-export function SalvarDados(dadosASeremSalvos)
+export async function TentarSalvarDados({patrimonio,IMEI,Responsavel})
+{
+    if(!{patrimonio,IMEI,Responsavel}) return false;
+    //console.log("Tentar salvar dados. "+ await ChecarSeJaCadastrado({patrimonio,IMEI,Responsavel}));
+    if(await ChecarSeJaCadastrado({patrimonio,IMEI,Responsavel})==true)
+    {
+        return "Falha!Tablet Já cadastrado."
+    }
+    
+    const validacaoDeDados =ValidarDados({patrimonio,IMEI,Responsavel})
+    if(validacaoDeDados===true)
+    {
+        SalvarDados({patrimonio,IMEI,Responsavel});
+        return true;
+    }
+        
+    else 
+        return validacaoDeDados;
+
+
+}
+
+function SalvarDados(dadosASeremSalvos)
 {
     console.log(dadosASeremSalvos);
     EncapsularDados(dadosASeremSalvos);
 }
-
-export function SalvarParametrosDeBusca(parametrosDeBusca)
+function ValidarDados(dados)
 {
-    saveQueryParam(parametrosDeBusca);
+    if(!dados.patrimonio|| dados.patrimonio === undefined) return "Patrimônio invaldio";
+    if(!dados.IMEI|| dados.IMEI=="" || dados.IMEI === undefined || dados.IMEI.length !=15 ) 
+    {
+        console.log(dados.IMEI);
+        console.log(dados.IMEI.length);
+        console.log( typeof(dados.IMEI));
+        return "IMEI inváldio.";
+    }
+    
+    return true;
 }
 
-
-async function saveQueryParam(queryParam)
+export async function SalvarParametrosDeBusca(queryParam)
 {
     await AsyncStorage.setItem("@catalagoDeTablets:queryKey", JSON.stringify(queryParam));
 }

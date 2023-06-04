@@ -1,7 +1,8 @@
 import React, {useState, useEffect} from 'react';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRoute } from '@react-navigation/native';
-import { SalvarDados } from '../components/AsyncStorageHandler';
+import { TentarSalvarDados } from '../components/AsyncStorageHandler';
+
 
 import { Box,
     Center, 
@@ -13,6 +14,7 @@ import { Box,
     Checkbox,
     FormControl,
     IconButton,
+    useToast
 } from 'native-base'
 
 
@@ -23,6 +25,8 @@ export default function Catalogar(props){
     const [Responsavel, setResponsavel] = useState("");
     const [lendoPatrimonio, setRead]  = useState(true);
 
+    const toast = useToast();
+
     const route = useRoute();
     const { data } = route.params;
     
@@ -31,7 +35,29 @@ export default function Catalogar(props){
                 setImei(data);
             else
                 setPatrimonio(data);
-    },[data])  
+    },[data])
+
+    async function Catalogar()
+    {
+        const resultadoDeTentativa = await TentarSalvarDados({patrimonio,IMEI,Responsavel});
+        if(resultadoDeTentativa=== false) toast.show({description:'Formato de dados inválido!'});
+        
+        else if(resultadoDeTentativa === true)
+        {
+            toast.show({description:'Catálogo feito com sucesso!'});
+            Limpar();
+        }    
+        else
+            toast.show({description:resultadoDeTentativa})
+
+    }
+    
+    function Limpar()
+    {
+        setImei("");
+        setResponsavel("");
+        setPatrimonio("");
+    }
     return(
 
 
@@ -85,7 +111,7 @@ export default function Catalogar(props){
                 <Text>Nome do Responsável :</Text>
                 <Input placeholder="" 
                 onChangeText={setResponsavel} 
-                />
+                >{Responsavel}</Input>
             </Box>
             <Box>
                 <Center>
@@ -116,7 +142,9 @@ export default function Catalogar(props){
 
             <Box  flex={1} alignItems='center' justifyContent="flex-end" alignContent='flex-end'>
                 <Button width="80%" colorScheme="emerald" size="lg"
-                onPress={()=>{SalvarDados({patrimonio,IMEI,Responsavel})}}>
+                onPress={()=>{
+                    Catalogar(); 
+                    }}>
                     Catalogar</Button>
             </Box>
         </Box>

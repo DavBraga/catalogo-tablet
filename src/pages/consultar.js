@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRoute } from '@react-navigation/native';
+import { RecuperarDados,SalvarParametrosDeBusca } from '../components/AsyncStorageHandler';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import {Box,
     Text, 
@@ -8,24 +8,34 @@ import {Box,
     Input,
     Button,
     IconButton,
+    useToast
 } from 'native-base';
 export default function Consultar(props)
 {
     const [patrimonio, setPatrimonio] = useState("");
     const [IMEI, setImei] = useState("");
     const [Responsavel, setResponsavel] = useState("");
+    
+    const toast = useToast();
 
     const route = useRoute();
     const {data} = route.params;
 
-    async function saveQueryParam()
+    async function buscarDados()
     {
         const queryParam={
             patrimonio,
             IMEI,
             Responsavel
         }
-        await AsyncStorage.setItem("@catalagoDeTablets:queryKey", JSON.stringify(queryParam));
+        await SalvarParametrosDeBusca(queryParam);
+       
+        const dadosRecuperados = await RecuperarDados();
+        if(dadosRecuperados)
+            props.navigation.navigate("Resultado",dadosRecuperados);
+        else
+            toast.show({description:"Tablet não encontrado!", placement:'top'});
+
     }
 
     useEffect(()=>{
@@ -82,13 +92,12 @@ export default function Consultar(props)
             <Box flex={1} alignItems='center' justifyContent="flex-end" alignContent='flex-end'  >
             <IconButton icon={<Ionicons name="barcode"/>} 
                 _icon={{size:"2xl", color: 'black'}}
-               // colorScheme="emerald" 
                 onPress={()=> {props.navigation.navigate("Scan", route.name); }} ></IconButton>
             </Box>
 
             <Box flex={1} alignItems='center' justifyContent="flex-end" alignContent='flex-end'>
                 <Button colorScheme="emerald" size="lg"
-                onPress={()=> {saveQueryParam();  props.navigation.navigate("Resultado");}}
+                onPress={()=> {buscarDados() }}
                 
                 >Consultar</Button >
             </Box>

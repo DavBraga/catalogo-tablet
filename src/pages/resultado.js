@@ -1,61 +1,23 @@
 import React, {useEffect, useState} from "react";
-import {Box, Text, Divider, HStack, Button} from 'native-base';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { RecuperarDados,testFunction } from "../components/AsyncStorageHandler";
+import {Box, Text, Divider, HStack, Button, useToast} from 'native-base';
+import { useRoute } from "@react-navigation/native";
 
 export default function Resultado()
 {
     const [patrimonio, setPatrimonio] = useState("");
     const [IMEI, setImei] = useState("");
     const [Responsavel, setResponsavel] = useState("");
-    let  dados;
+    const route = useRoute();
+    let dadosDeResultado = route.params;
+    const toast = useToast();
 
-    const retriveData = async()=>
+    function CarregarDados()
     {
-        const retriveData = await RecuperarDados();
-        AtualizarDadosExibidos(retriveData);
-        console.log(retriveData);
+        if(dadosDeResultado)
+        AtualizarDadosExibidos(dadosDeResultado);
+        else
+        toast.show({description:"Tablet não encontrado!", placement:'top'});
     }
-
-    // RecuperarDados().then(element=>{
-    //     console.log(element);
-    //  })
-    //  .catch(error=>{
-    //     console.log('error: '+error);
-    //  })
-    
-    // async function recuperarDados()
-    // {
-    //     const response =(await AsyncStorage.getItem("@catalagoDeTablets:tablets"));
-    //     const queryKey =  JSON.parse(await AsyncStorage.getItem("@catalagoDeTablets:queryKey"));
-    //     console.log(queryKey);
-    //     if(queryKey == null) return;
-
-    //     else if(queryKey.IMEI != "")
-    //     {
-    //         const previousData = response ? JSON.parse(response) : [];
-    //         previousData.forEach(element => {
-    //             if(element.IMEI == queryKey.IMEI) AtualizarDadosExibidos(element);
-    //         });
-    //     }
-
-    //     if(queryKey.patrimonio != "")
-    //     {
-    //         const previousData = response ? JSON.parse(response) : [];
-    //             previousData.forEach(element => {
-    //             if(element.patrimonio == queryKey.patrimonio) AtualizarDadosExibidos(element);
-    //         });
-
-    //     }
-    //     else if(queryKey.Responsavel != "")
-    //     {
-    //         const previousData = response ? JSON.parse(response) : [];
-    //         previousData.forEach(element => {
-    //             if(element.Responsavel == queryKey.Responsavel) AtualizarDadosExibidos(element);
-    //         });
-    //     }
-    //     AsyncStorage.removeItem("@catalagoDeTablets:queryKey");
-    // }
 
     function AtualizarDadosExibidos(resultado)
     {
@@ -65,12 +27,8 @@ export default function Resultado()
         setResponsavel(resultado.Responsavel);
     }
     useEffect(()=>{
-        retriveData();
-       
-    //console.log(testFunction());
-
-
-    })
+       CarregarDados();
+    },[])
 
 
     return(
